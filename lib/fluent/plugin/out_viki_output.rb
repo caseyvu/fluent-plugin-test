@@ -1,5 +1,4 @@
 require 'fluent/output'
-
 require 'json'
 
 module Fluent
@@ -34,10 +33,24 @@ module Fluent
     def emit(tag, es, chain)
       chain.next
       es.each {|time,record|
-      	router.emit('development', time, record)
+      	process_record(record, time)
       }
     end
 
+    private
+    def process_record(record, time)
+      messages =  begin
+                    messages = JSON.parse(record['messages'])
+                  rescue JSON::ParserError => e
+                    {}
+                  end
+
+      status = messages['status']
+
+      if status == 200
+        router.emit('development', time, messages)
+      end
+    end
     
   end
 
