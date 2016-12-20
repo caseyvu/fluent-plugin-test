@@ -45,7 +45,7 @@ module Fluent
                     {}
                   end
 
-      headers = record['headers']
+      #headers = record['headers']
       #ip = record['ip']
       #params =  if messages['params'].nil? {} 
       #          else messages['params']
