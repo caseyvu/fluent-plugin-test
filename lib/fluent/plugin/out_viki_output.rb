@@ -46,7 +46,7 @@ module Fluent
                   end
       headers = record['headers']
       ip = record['ip']
-      params =  if messages['params'] messages['params']
+      params =  if messages['params'].present? messages['params']
                 else {}
                 end
 
