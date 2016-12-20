@@ -1,4 +1,5 @@
 require 'fluent/output'
+require 'fluent/plugin/geoip'
 require 'json'
 
 module Fluent
@@ -60,7 +61,7 @@ module Fluent
         new_record = params.merge({'t' => t.to_s, 'ip' => ip, 'path' => messages['path']})
 
         # Fix IP, find country and other info from IP address
-        # TODO
+        set_record_ip(ip, headers, new_record)
         # Set domain from site
         set_record_domain(new_record)
         # Clean up record
@@ -160,6 +161,39 @@ module Fluent
           record['subtitle_lang'] = 'zh'
         end
       end
+    end
+
+    # Find valid IP address and other info from geoip
+    def set_record_ip(ip, headers, record)
+      raw_ip = record['ip'] || headers['HTTP_X_FORWARDED_FOR'] || headers['REMOTE_ADDR'] || ip
+      ips = unless raw_ip.nil?
+        if raw_ip.kind_of? String
+          raw_ip.gsub(' ', ',').split(',')
+        elsif raw_ip.kind_of? Array
+          raw_ip
+            .map {|e| e.split(",").map(&:strip) }
+            .inject([]) {|accum, e| accum + e}
+        end
+      end
+
+      record['country'] = record.delete('country_code') if record['country_code']
+
+      valid_ip, geo_country = resolve_correct_ip(ips)
+
+      record['ip_raw'], record['ip'] = raw_ip, valid_ip
+      record['country'] = geo_country || record['country']
+
+      record.merge! city_of_ip(valid_ip)
+    end
+
+    def resolve_correct_ip(ips)
+      ips.each do |ip|
+        geo_country = country_code_of_ip(ip)
+
+        return [ip, geo_country] unless geo_country.nil?
+      end unless ips.nil?
+
+      [ips.first, nil]
     end
 
     

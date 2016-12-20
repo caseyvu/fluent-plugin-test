@@ -33,7 +33,7 @@ module Fluent
 
     def geoip_db_path
       if @@geoip_db_path.nil?
-        '/etc/GeoIP2-City.mmdb'
+        '/etc/geoip/GeoLite2-City.mmdb'
       else
         @@geoip_db_path
       end
