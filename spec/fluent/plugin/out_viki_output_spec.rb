@@ -12,11 +12,11 @@ RSpec.describe Fluent::VikiOutput do
   	it 'filter out all non-200 requests' do
   		Timecop.freeze(now) do
   			driver.run do
-  				driver.emit({'status' => 200,'headers' => {},'messages' => {'params' => {'event' => 'test1'}}.to_json})
-  				driver.emit({'status' => 400,'headers' => {},'messages' => {'params' => {'event' => 'test'}}.to_json})
-  				driver.emit({'status' => 401,'headers' => {},'messages' => {'params' => {'event' => 'test'}}.to_json})
-  				driver.emit({'status' => 500,'headers' => {},'messages' => {'params' => {'event' => 'test'}}.to_json})
-  				driver.emit({'status' => 200,'headers' => {},'messages' => {'params' => {'event' => 'test2'}}.to_json})
+  				driver.emit({'headers' => {},'messages' => {'status' => 200,'params' => {'event' => 'test1'}}.to_json})
+  				driver.emit({'headers' => {},'messages' => {'status' => 400,'params' => {'event' => 'test'}}.to_json})
+  				driver.emit({'headers' => {},'messages' => {'status' => 401,'params' => {'event' => 'test'}}.to_json})
+  				driver.emit({'headers' => {},'messages' => {'status' => 500,'params' => {'event' => 'test'}}.to_json})
+  				driver.emit({'headers' => {},'messages' => {'status' => 200,'params' => {'event' => 'test2'}}.to_json})
   			end
   			driver.expect_emit 'unknown', now_ts, {'event' =>'test1'}
   			driver.expect_emit 'unknown', now_ts, {'event' =>'test2'}
@@ -26,11 +26,11 @@ RSpec.describe Fluent::VikiOutput do
   	it 'tags are extracted from path' do
   		Timecop.freeze(now) do
   			driver.run do
-  				driver.emit({'status' => 200,'headers' => {},'messages' => {'path' => '/api/production','params' => {'event' => 'test1'}}.to_json})
-  				driver.emit({'status' => 200,'headers' => {},'messages' => {'path' => '/api/development','params' => {'event' => 'test2'}}.to_json})
-  				driver.emit({'status' => 200,'headers' => {},'messages' => {'path' => 'something','params' => {'event' => 'test3'}}.to_json})
-  				driver.emit({'status' => 200,'headers' => {},'messages' => {'path' => '','params' => {'event' => 'test4'}}.to_json})
-  				driver.emit({'status' => 200,'headers' => {},'messages' => {'params' => {'event' => 'test5'}}.to_json})
+  				driver.emit({'headers' => {},'messages' => {'status' => 200,'path' => '/api/production','params' => {'event' => 'test1'}}.to_json})
+  				driver.emit({'headers' => {},'messages' => {'status' => 200,'path' => '/api/development','params' => {'event' => 'test2'}}.to_json})
+  				driver.emit({'headers' => {},'messages' => {'status' => 200,'path' => 'something','params' => {'event' => 'test3'}}.to_json})
+  				driver.emit({'headers' => {},'messages' => {'status' => 200,'path' => '','params' => {'event' => 'test4'}}.to_json})
+  				driver.emit({'headers' => {},'messages' => {'status' => 200,'params' => {'event' => 'test5'}}.to_json})
   			end
   			driver.expect_emit 'production', now_ts, {'event' =>'test1'}
   			driver.expect_emit 'development', now_ts, {'event' =>'test2'}
@@ -40,7 +40,6 @@ RSpec.describe Fluent::VikiOutput do
   		end
   	end
   end
-
-
-
 end
+
+

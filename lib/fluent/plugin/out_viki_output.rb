@@ -44,11 +44,44 @@ module Fluent
                   rescue JSON::ParserError => e
                     {}
                   end
+      headers = record['headers']
+      ip = record['ip']
+      params =  if messages['params'] messages['params']
+                else {}
+                end
 
       status = messages['status']
-
       if status == 200
-        router.emit('development', time, messages)
+        # Get the timestamp
+        t = get_record_time(params, headers)
+        if t <= 0
+          t = time.to_i
+        end
+        new_record = params.merge({'ip' => ip, 't' => t.to_s})
+
+        router.emit(resolve_tag(messages['path']), time, new_record)
+      end
+    end
+
+    # Get tag for record
+    def resolve_tag(path)
+      if path == '/api/production'
+        'production'
+      elsif path == '/api/development'
+        'development'
+      else
+        'unknown'
+      end
+    end
+
+    # Fix the time: using time from the record if available
+    def get_record_time(params, headers)
+      if headers['HTTP_TIMESTAMP']
+        return headers['HTTP_TIMESTAMP'].to_i
+      elsif headers['TIMESTAMP']
+        return headers['TIMESTAMP'].to_i
+      else
+        return params['t'].to_i
       end
     end
     
