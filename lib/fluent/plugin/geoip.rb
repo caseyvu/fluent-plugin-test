@@ -2,6 +2,8 @@ require 'maxminddb'
 
 module Fluent
   module Geoip
+    @@geoip_db_path = '/etc/geoip/GeoLite2-City.mmdb'
+
     def country_code_of_ip(ip)
       iso_code = global_geoip.lookup(ip).country.iso_code
       iso_code && iso_code.downcase
@@ -32,11 +34,7 @@ module Fluent
     end
 
     def geoip_db_path
-      if @@geoip_db_path.nil?
-        '/etc/geoip/GeoLite2-City.mmdb'
-      else
-        @@geoip_db_path
-      end
+      @@geoip_db_path
     end
   end
 end
