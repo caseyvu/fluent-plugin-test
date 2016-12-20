@@ -47,23 +47,23 @@ module Fluent
 
       headers = record['headers']
       ip = record['ip']
-      #params =  if messages['params'].nil? {} 
-      #          else messages['params']
-      #          end
+      params =  if messages['params'].nil? {} 
+                else messages['params']
+                end
 
-      router.emit('development', time, messages)
+      
 
-      #status = messages['status']
-      #if status == 200
+      status = messages['status']
+      if status == 200
         # Get the timestamp
         #t = get_record_time(params, headers)
         #if t <= 0
         #  t = time.to_i
         #end
-        #new_record = params.merge({'ip' => ip, 'path' => messages['path']})
+        new_record = params.merge({'ip' => ip, 'path' => messages['path']})
 
-        
-      #end
+        router.emit(resolve_tag(messages['path']), time, new_record)
+      end
     end
 
     # Get tag for record
