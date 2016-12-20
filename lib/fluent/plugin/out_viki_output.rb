@@ -45,13 +45,13 @@ module Fluent
                     {}
                   end
 
-      #headers = record['headers']
-      #ip = record['ip']
+      headers = record['headers']
+      ip = record['ip']
       #params =  if messages['params'].nil? {} 
       #          else messages['params']
       #          end
 
-      router.emit('development', time, messages)
+      router.emit('development', time, messages.merge({ ip: ip}))
 
       #status = messages['status']
       #if status == 200
