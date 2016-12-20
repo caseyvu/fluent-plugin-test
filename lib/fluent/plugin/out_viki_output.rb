@@ -45,11 +45,11 @@ module Fluent
                     {}
                   end
 
-      headers = record['headers']
-      ip = record['ip']
-      params =  if messages['params'].nil? {} 
-                else messages['params']
-                end
+      #headers = record['headers']
+      #ip = record['ip']
+      #params =  if messages['params'].nil? {} 
+      #          else messages['params']
+      #          end
 
       router.emit('development', time, messages)
 
