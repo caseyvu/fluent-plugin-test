@@ -51,7 +51,7 @@ module Fluent
       #          else messages['params']
       #          end
 
-      router.emit('development', time, messages.merge({ ip: ip}))
+      router.emit('development', time, messages))
 
       #status = messages['status']
       #if status == 200
