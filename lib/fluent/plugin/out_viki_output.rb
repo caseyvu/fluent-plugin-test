@@ -56,11 +56,11 @@ module Fluent
       status = messages['status']
       if status == 200
         # Get the timestamp
-        #t = get_record_time(params, headers)
-        #if t <= 0
-        #  t = time.to_i
-        #end
-        new_record = params.merge({'ip' => ip, 'path' => messages['path']})
+        t = get_record_time(params, headers)
+        if t <= 0
+          t = time.to_i
+        end
+        new_record = params.merge({'t' => t.to_s, 'ip' => ip, 'path' => messages['path']})
 
         router.emit(resolve_tag(messages['path']), time, new_record)
       end
