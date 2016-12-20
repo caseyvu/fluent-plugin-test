@@ -4,6 +4,8 @@ require 'json'
 
 module Fluent
 	class VikiOutput < Output 
+    include Geoip
+    
 		Fluent::Plugin.register_output('viki_output', self)
 
 		# To support Fluentd v0.10.57 or earlier
