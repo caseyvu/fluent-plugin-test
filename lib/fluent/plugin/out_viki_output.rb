@@ -34,9 +34,7 @@ module Fluent
     def emit(tag, es, chain)
       chain.next
       es.each {|time,record|
-      	if filter_record(record)
-          router.emit('development', time, record)
-        end
+      	router.emit('development', time, record)
       }
     end
 
