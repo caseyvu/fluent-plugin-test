@@ -5,7 +5,7 @@ require 'json'
 module Fluent
 	class VikiOutput < Output 
     include Geoip
-    
+
 		Fluent::Plugin.register_output('viki_output', self)
 
 		# To support Fluentd v0.10.57 or earlier
@@ -60,7 +60,7 @@ module Fluent
         if t <= 0
           t = time.to_i
         end
-        new_record = params.merge({'t' => t.to_s, 'ip' => ip, 'path' => messages['path']})
+        new_record = params.merge({'t' => t.to_s, 'path' => messages['path']})
 
         # Fix IP, find country and other info from IP address
         set_record_ip(ip, headers, new_record)
